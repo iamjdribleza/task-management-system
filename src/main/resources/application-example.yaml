@@ -1,0 +1,5 @@
+spring:
+    application:
+        name: task-management-system
+    profiles:
+        active: dev

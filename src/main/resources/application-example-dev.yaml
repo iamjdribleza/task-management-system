@@ -1,0 +1,28 @@
+#spring
+spring:
+    datasource:
+        url: jdbc:postgresql://localhost:5432/task_management_system
+        username: ${DB_USERNAME}}
+        password: ${DB_PASSWORD}
+        driver-class-name: org.postgresql.Driver
+    jpa:
+        hibernate:
+            ddl-auto: update
+
+#server
+server:
+    port: 8080
+
+#jwt
+jwt:
+    secret:
+        key: jwt@secretkey_12345_postgresql@localhost
+
+#logging
+logging:
+    level:
+        root: INFO
+    file:
+        name: application.log
+        max-size: 10MB
+        max-history: 7
