@@ -7,11 +7,13 @@
 package com.iamjdribleza.task_management_system.user;
 
 import com.iamjdribleza.task_management_system.auth.AuthService;
+import com.iamjdribleza.task_management_system.enums.AccountStatus;
 import com.iamjdribleza.task_management_system.exceptions.ResourceAlreadyExists;
 import com.iamjdribleza.task_management_system.exceptions.ResourceNotFoundException;
 import com.iamjdribleza.task_management_system.mapper.UserMapper;
 import com.iamjdribleza.task_management_system.enums.Role;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -121,10 +123,36 @@ public class UserServiceImpl implements UserService {
      *
      * @param refId User's reference id
      */
+    @PreAuthorize("hasRole('ADMIN')") // Admin is the only one allowed to delete a user account
     @Transactional
     @Override
     public void deleteUser(UUID refId) {
-        userRepository.findByRefId(refId)
+        // Get user to be deleted using reference id
+        User user = userRepository.findByRefId(refId)
                 .orElseThrow(() -> new ResourceNotFoundException("No user found with reference id" + refId));
+
+        // Confirm deletion
+        userRepository.delete(user);
+    }
+
+    /**
+     * Deactivates a user by setting account as deactivated(boolean)
+     */
+    @Transactional
+    @Override
+    public void deactivateUser() {
+        User authenticatedUser = authService.getAuthenticatedUser();
+
+        // Toggle account's status
+        AccountStatus newStatus =
+                (authenticatedUser.getAccountStatus() == AccountStatus.ACTIVE)?
+                AccountStatus.INACTIVE:
+                AccountStatus.ACTIVE;
+
+        // Update account status
+        authenticatedUser.setAccountStatus(newStatus);
+
+        // Save changes
+        userRepository.save(authenticatedUser);
     }
 }

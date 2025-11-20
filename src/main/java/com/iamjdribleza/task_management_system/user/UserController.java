@@ -91,10 +91,22 @@ public class UserController {
      * @param refId User's reference id
      * @return ResponseEntity of HttpStatus 204
      */
-    @PreAuthorize("hasRole(ADMIN)") // Admin is the only one allowed to delete a user account
     @DeleteMapping("/{refId}")
     public ResponseEntity<?> deleteUser(@PathVariable UUID refId){
         userService.deleteUser(refId);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * PATCH /api/v1/users/deactivate
+     * Deactivates a user's account
+     *
+     * @return ResponseEntity of HttpStatus 204
+     */
+    @PatchMapping("/deactivate")
+    public ResponseEntity<?> deactivateUser(){
+        userService.deactivateUser();
 
         return ResponseEntity.noContent().build();
     }
