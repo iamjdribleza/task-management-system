@@ -21,4 +21,5 @@ public interface UserService {
     UserDto createUser(UserDto userDto);
     void updateUser(UserDto userDto);
     void deleteUser(UUID refId);
+    void deactivateUser();
 }

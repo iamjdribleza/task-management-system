@@ -7,6 +7,7 @@ target/
 # IGNORE REAL CONFIGURATION
 src/main/resources/application.yaml
 src/main/resources/application-dev.yaml
+/application.*
 
 ### STS ###
 .apt_generated

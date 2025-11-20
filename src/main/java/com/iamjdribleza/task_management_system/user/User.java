@@ -7,6 +7,7 @@
 package com.iamjdribleza.task_management_system.user;
 
 import com.iamjdribleza.task_management_system.auth.Auth;
+import com.iamjdribleza.task_management_system.enums.AccountStatus;
 import com.iamjdribleza.task_management_system.task.Task;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -70,6 +71,9 @@ public class User {
     )
     private Auth auth;
 
+
+    @Column(nullable = false)
+    private AccountStatus accountStatus;
 
     @OneToMany(
             cascade = CascadeType.REMOVE,
