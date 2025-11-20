@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -79,7 +79,7 @@ public class User {
     private List<Task> tasks;
 
     @Column(nullable = false)
-    private List<SimpleGrantedAuthority> roles;
+    private List<GrantedAuthority> roles;
 
     @CreationTimestamp
     private LocalDate dateCreated;

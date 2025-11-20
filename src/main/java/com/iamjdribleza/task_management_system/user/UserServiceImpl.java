@@ -12,6 +12,7 @@ import com.iamjdribleza.task_management_system.exceptions.ResourceNotFoundExcept
 import com.iamjdribleza.task_management_system.mapper.UserMapper;
 import com.iamjdribleza.task_management_system.enums.Role;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -85,8 +86,11 @@ public class UserServiceImpl implements UserService {
         String hashedPassword = passwordEncoder.encode(rawPassword);
         newUser.getAuth().setPassword(hashedPassword);
 
+        // Initialize role as regular user
+        GrantedAuthority initialRole = new SimpleGrantedAuthority(Role.USER.name());
+
         // Set roles - USER for all users
-        newUser.setRoles(List.of(new SimpleGrantedAuthority(Role.USER.name())));
+        newUser.setRoles(List.of(initialRole));
 
         User savedUser = userRepository.save(newUser);
 
