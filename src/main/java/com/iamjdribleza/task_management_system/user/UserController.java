@@ -9,6 +9,7 @@ package com.iamjdribleza.task_management_system.user;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -87,12 +88,14 @@ public class UserController {
      * DELETE /api/v1/users/{refId}
      * Deletes a user
      *
-     * @param refId
-     * @return
+     * @param refId User's reference id
+     * @return ResponseEntity of HttpStatus 204
      */
+    @PreAuthorize("hasRole(ADMIN)") // Admin is the only one allowed to delete a user account
     @DeleteMapping("/{refId}")
     public ResponseEntity<?> deleteUser(@PathVariable UUID refId){
         userService.deleteUser(refId);
+
         return ResponseEntity.noContent().build();
     }
 }
