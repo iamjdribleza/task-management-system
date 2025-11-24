@@ -6,7 +6,7 @@
 
 package com.iamjdribleza.task_management_system.task;
 
-import com.iamjdribleza.task_management_system.auth.AuthService;
+import com.iamjdribleza.task_management_system.auth.AuthenticationService;
 import com.iamjdribleza.task_management_system.exceptions.PermissionDeniedException;
 import com.iamjdribleza.task_management_system.exceptions.ResourceNotFoundException;
 import com.iamjdribleza.task_management_system.mapper.TaskMapper;
@@ -32,12 +32,11 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 
-@Transactional(rollbackFor = ResourceNotFoundException.class)
 @Service
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
-    private final AuthService authService;
+    private final AuthenticationService authenticationService;
     private final TaskMapper taskMapper;
     private final JwtDecoder jwtDecoder;
 
@@ -51,7 +50,7 @@ public class TaskServiceImpl implements TaskService {
     public Page<TaskDto> getTodaysTasks(String token, int pageOffset) {
 
         // Get authenticated user
-        User user = authService.getAuthenticatedUser();
+        User user = authenticationService.getAuthenticatedUser();
         LocalDate today = LocalDate.now();
 
         Pageable pageable = PageRequest.of(pageOffset, 10);
@@ -83,10 +82,10 @@ public class TaskServiceImpl implements TaskService {
     public TaskDto getTask(UUID refId) {
 
         // Get authenticated user
-        User user = authService.getAuthenticatedUser();
+        User user = authenticationService.getAuthenticatedUser();
 
         // Retrieve task
-        Task task = taskRepository.findByRefId(refId)
+        Task task = taskRepository.findByReferenceId(refId)
                 .orElseThrow(() -> new ResourceNotFoundException("refId"));
 
         // Check if user has permission to access the task
@@ -109,8 +108,11 @@ public class TaskServiceImpl implements TaskService {
     public String createTask(String token, TaskDto taskDto) {
         Task task = taskMapper.toTask(taskDto);
 
+        // Set reference id
+        task.setReferenceId(UUID.randomUUID());
+
         // Get authenticated user
-        User user = authService.getAuthenticatedUser();
+        User user = authenticationService.getAuthenticatedUser();
 
         // Set user to task
         task.setUser(user);
@@ -131,7 +133,7 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     @Override
     public void updateTask(UUID refId, TaskDto taskDto) {
-        Task task = taskRepository.findByRefId(refId)
+        Task task = taskRepository.findByReferenceId(refId)
                 .orElseThrow(() -> new ResourceNotFoundException("refId"));
 
         // Check if user has permission to delete a task
@@ -156,7 +158,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void deleteTask(UUID refId) {
 
-        Task task = taskRepository.findByRefId(refId)
+        Task task = taskRepository.findByReferenceId(refId)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
 
         // Check if user has permission to delete a task
@@ -175,7 +177,7 @@ public class TaskServiceImpl implements TaskService {
      */
     private boolean userHasPermission(Task task){
         // Authenticated user
-        User user = authService.getAuthenticatedUser();
+        User user = authenticationService.getAuthenticatedUser();
 
         // Get task user's reference id
         UUID taskUserReferenceId = task.getUser().getReferenceId();

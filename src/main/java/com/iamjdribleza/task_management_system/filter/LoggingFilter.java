@@ -16,6 +16,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * Logging Filter to log every request details such as endpoint, method, time received, and response code
+ *
+ * @author iamjdribleza
+ * @version 1.0
+ */
+
 public class LoggingFilter extends OncePerRequestFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoggingFilter.class);

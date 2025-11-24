@@ -16,7 +16,7 @@ import java.util.UUID;
 /**
  * Stores Task details for service and controller rendering.
  *
- * @param refId task reference id
+ * @param referenceId task reference id
  * @param description task's details
  * @param eventDate task's date occurs
  * @param timeAgo time passed upon task creation
@@ -26,7 +26,7 @@ import java.util.UUID;
  * @version 1.0
  */
 public record TaskDto(
-        UUID refId,
+        UUID referenceId,
 
         @NotBlank(message = "Blank description")
         String description,

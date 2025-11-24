@@ -16,6 +16,6 @@ import java.util.Optional;
  * @author iamjdribleza
  * @version 1.0
  */
-public interface AuthRepository extends JpaRepository<Auth, Long> {
-    Optional<Auth> findByEmail(String email);
+public interface AuthenticationRepository extends JpaRepository<Authentication, Long> {
+    Optional<Authentication> findByEmail(String email);
 }

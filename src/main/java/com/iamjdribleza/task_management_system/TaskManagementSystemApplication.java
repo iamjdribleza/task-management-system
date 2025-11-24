@@ -20,7 +20,7 @@ public class TaskManagementSystemApplication {
     private final Logger LOGGER = LoggerFactory.getLogger(TaskManagementSystemApplication.class);
 
     // Get application name from the configuration
-    @Value("${application.name}")
+    @Value("${spring.application.name}")
     private String appName;
 
     // Get server port from the configuration

@@ -9,13 +9,15 @@ package com.iamjdribleza.task_management_system.auth;
 import jakarta.validation.constraints.NotBlank;
 
 /**
- * Stores Authentication data for service and controller rendering
+ * Stores user's Authentication data for service and controller rendering.
  *
- * @param email User's email address
+ * @param email account's email
+ *
  * @author iamjdribleza
  * @version 1.0
  */
-public record EmailDto(
+public record AuthenticationEmailDto(
         @NotBlank(message = "Blank email address")
         String email
-) {}
+) {
+}

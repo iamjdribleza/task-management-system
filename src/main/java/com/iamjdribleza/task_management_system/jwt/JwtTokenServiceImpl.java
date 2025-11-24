@@ -7,7 +7,7 @@
 package com.iamjdribleza.task_management_system.jwt;
 
 import com.iamjdribleza.task_management_system.api.ResponseToken;
-import com.iamjdribleza.task_management_system.auth.AuthUserDetails;
+import com.iamjdribleza.task_management_system.auth.AuthenticationDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -44,7 +44,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     @Override
     public ResponseToken generateToken(Authentication auth){
         Instant now = Instant.now();
-        String email = ((AuthUserDetails) auth.getPrincipal()).getUsername();
+        String email = ((AuthenticationDetails) auth.getPrincipal()).getUsername();
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")

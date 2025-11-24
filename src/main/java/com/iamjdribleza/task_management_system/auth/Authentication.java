@@ -28,7 +28,7 @@ import java.util.UUID;
 @Getter
 
 @Entity
-public class Auth {
+public class Authentication {
     @Id
     @SequenceGenerator(
             name = "auth_seq_gen",
@@ -47,7 +47,6 @@ public class Auth {
             nullable = false,
             columnDefinition = "UUID"
     )
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID referenceId;
 
     @Column(
@@ -60,6 +59,6 @@ public class Auth {
     @Column(nullable = false)
     private String password;
 
-    @OneToOne(mappedBy = "auth")
+    @OneToOne(mappedBy = "authentication")
     private User user;
 }

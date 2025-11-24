@@ -23,5 +23,5 @@ public interface TaskService {
     String createTask(String token, TaskDto taskDto);
     TaskDto getTask(UUID refId);
     void updateTask(UUID refId, TaskDto taskDto);
-    void deleteTask(UUID id);
+    void deleteTask(UUID refId);
 }
