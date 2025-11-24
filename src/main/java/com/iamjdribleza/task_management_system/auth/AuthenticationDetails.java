@@ -10,6 +10,7 @@ import com.iamjdribleza.task_management_system.user.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -24,23 +25,25 @@ import java.util.Collection;
 @Getter
 @RequiredArgsConstructor
 
-public class AuthUserDetails implements UserDetails {
+public class AuthenticationDetails implements UserDetails {
 
     private final User user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.user.getRoles();
+        return this.user.getRoles().stream()
+                .map(SimpleGrantedAuthority::new)
+                .toList();
     }
 
     @Override
     public String getPassword() {
-        return this.user.getAuth().getPassword();
+        return this.user.getAuthentication().getPassword();
     }
 
     @Override
     public String getUsername() {
-        return this.user.getAuth().getEmail();
+        return this.user.getAuthentication().getEmail();
     }
 
 }

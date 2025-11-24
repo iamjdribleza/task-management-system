@@ -6,7 +6,7 @@
 
 package com.iamjdribleza.task_management_system.user;
 
-import com.iamjdribleza.task_management_system.auth.Auth;
+import com.iamjdribleza.task_management_system.auth.Authentication;
 import com.iamjdribleza.task_management_system.enums.AccountStatus;
 import com.iamjdribleza.task_management_system.task.Task;
 import jakarta.persistence.*;
@@ -16,9 +16,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.security.core.GrantedAuthority;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,6 +35,7 @@ import java.util.UUID;
 @Getter
 
 @Entity
+@Table(name = "app_user")
 public class User {
     @Id
     @SequenceGenerator(
@@ -42,16 +43,19 @@ public class User {
             sequenceName = "user_seq",
             allocationSize = 1
     )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq_gen")
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "user_seq_gen"
+    )
     private long id;
 
+    // Used to expose user's identity to the client
     @Column(
             unique = true,
             updatable = false,
             nullable = false,
             columnDefinition = "UUID"
     )
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID referenceId;
 
     @Column(nullable = false)
@@ -69,9 +73,10 @@ public class User {
             name ="auth_id",
             referencedColumnName = "id"
     )
-    private Auth auth;
+    private Authentication authentication;
 
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AccountStatus accountStatus;
 
@@ -83,7 +88,8 @@ public class User {
     private List<Task> tasks;
 
     @Column(nullable = false)
-    private List<GrantedAuthority> roles;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles = new ArrayList<>();
 
     @CreationTimestamp
     private LocalDate dateCreated;

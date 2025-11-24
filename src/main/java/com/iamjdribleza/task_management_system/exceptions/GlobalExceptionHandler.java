@@ -41,10 +41,12 @@ public class GlobalExceptionHandler {
                                                                          HttpServletRequest request) {
 
         ProblemDetail problemDetail = ProblemDetailUtil.details(
+                "invalid-arguments",
                 HttpStatus.BAD_REQUEST,
-                "INVALID_ARGUMENTS",
+                "Invalid Arguments",
                 Objects.requireNonNull(e.getBindingResult().getFieldError()).getField(),
-                400,
+                HttpStatus.BAD_REQUEST.value(),
+                "urn:problem:invoked-by:"+request.getRequestURI(),
                 ErrorCode.INVALID_ARGUMENTS.name(),
                 request.getRequestURI()
         );
@@ -64,10 +66,12 @@ public class GlobalExceptionHandler {
                                                                    HttpServletRequest request) {
 
         ProblemDetail problemDetail = ProblemDetailUtil.details(
+                "resource-not-found",
                 HttpStatus.NOT_FOUND,
-                "Not Found",
+                "Resource Not Found",
                 e.getMessage(),
-                404,
+                HttpStatus.NOT_FOUND.value(),
+                "urn:problem:invoked-by:"+request.getRequestURI(),
                 ErrorCode.RESOURCE_NOT_FOUND.name(),
                 request.getRequestURI()
         );
@@ -87,10 +91,12 @@ public class GlobalExceptionHandler {
                                                                HttpServletRequest request) {
 
         ProblemDetail problemDetail = ProblemDetailUtil.details(
+                "resource-conflict",
                 HttpStatus.CONFLICT,
-                "Conflict",
+                "Resource Conflict",
                 e.getMessage(),
-                409,
+                HttpStatus.CONFLICT.value(),
+                "urn:problem:invoked-by:"+request.getRequestURI(),
                 ErrorCode.RESOURCE_ALREADY_EXISTS.name(),
                 request.getRequestURI()
         );
@@ -110,11 +116,13 @@ public class GlobalExceptionHandler {
                                                                  HttpServletRequest request) {
 
         ProblemDetail problemDetail = ProblemDetailUtil.details(
-                HttpStatus.NOT_FOUND,
-                "Invalid Credentials",
+                "bad-credentials",
+                HttpStatus.UNAUTHORIZED,
+                "Bad Credentials",
                 e.getMessage(),
-                404,
-                ErrorCode.INVALID_CREDENTIALS.name(),
+                HttpStatus.UNAUTHORIZED.value(),
+                "urn:problem:invoked-by:"+request.getRequestURI(),
+                ErrorCode.BAD_CREDENTIALS.name(),
                 request.getRequestURI()
         );
 

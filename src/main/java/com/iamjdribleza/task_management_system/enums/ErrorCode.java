@@ -14,7 +14,7 @@ package com.iamjdribleza.task_management_system.enums;
 public enum ErrorCode {
     RESOURCE_ALREADY_EXISTS,
     RESOURCE_NOT_FOUND,
-    INVALID_CREDENTIALS,
+    BAD_CREDENTIALS,
     INVALID_ARGUMENTS,
     REQUEST_FORBIDDEN
 }

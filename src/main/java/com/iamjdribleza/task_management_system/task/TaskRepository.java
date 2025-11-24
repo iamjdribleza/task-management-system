@@ -22,6 +22,6 @@ import java.util.UUID;
  * @version 1.0
  */
 public interface TaskRepository extends JpaRepository<Task, Long> {
-    Optional<Task> findByRefId(UUID refId);
+    Optional<Task> findByReferenceId(UUID referenceId);
     Page<Task> findByUserAndEventDate(User user, Pageable pageable, LocalDate today);
 }

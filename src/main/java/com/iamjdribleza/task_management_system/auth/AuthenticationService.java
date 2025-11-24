@@ -15,8 +15,9 @@ import com.iamjdribleza.task_management_system.user.User;
  * @author iamjdribleza
  * @version 1.0
  */
-public interface AuthService {
-    ResponseToken authenticate(AuthDto credentials);
-    void sendEmailVerificationLink(EmailDto emailDto);
+public interface AuthenticationService {
+    ResponseToken authenticate(AuthenticationRequestDto credentials);
+    void sendEmailVerificationLink(AuthenticationEmailDto authenticationEmailDto);
     User getAuthenticatedUser();
+    void updatePassword(AuthenticationPasswordDto authenticationPasswordDto);
 }

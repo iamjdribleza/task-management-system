@@ -16,7 +16,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -43,8 +42,14 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String AUTH_BASE_PATH = "/api/v1/auth";
+    private static final String USER_BASE_PATH = "/api/v1/users";
+    private static final List<String> WHITE_LISTS = List.of(
+            AUTH_BASE_PATH,
+            AUTH_BASE_PATH+"/forgot-password",
+            AUTH_BASE_PATH+"/refresh",
+            USER_BASE_PATH
+    );
 
-    private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
     private final JwtTokenService jwtTokenService;
 
@@ -56,40 +61,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain) throws ServletException, IOException {
 
         // Check request and allowed endpoints
-        if (
-                request.getMethod().equalsIgnoreCase("POST")
-                        && List.of(
-                                AUTH_BASE_PATH,
-                                AUTH_BASE_PATH+"/forgot-password",
-                                AUTH_BASE_PATH+"/refresh"
-                        ).contains(request.getRequestURI())
-        ){
+        if (request.getMethod().equalsIgnoreCase("POST") && WHITE_LISTS.contains(request.getRequestURI())){
             filterChain.doFilter(request, response);
             return;
         }
 
+
         // Get authorization
         String authorization = request.getHeader("Authorization");
 
-        // Check authorization
-        if (authorization != null && authorization.startsWith("Bearer ")){
-            ProblemDetail responseError = ProblemDetailUtil.details(
-                    HttpStatus.FORBIDDEN,
-                    "Token Not Found",
-                    "No token found",
-                    HttpStatus.FORBIDDEN.value(),
-                    ErrorCode.REQUEST_FORBIDDEN.name(),
-                    request.getRequestURI()
-            );
+        // Check if token is present
+        try {
+            boolean isTokenPresent = authorization.split(" ")[1] == null;
+        }catch (ArrayIndexOutOfBoundsException e){
+            setProblemDetails(request, response);
+            return;
+        }
 
-            // Send error as JSON
-            response.getWriter().write(responseError.toString());
+        // Check authorization
+        if (authorization == null || !authorization.startsWith("Bearer ")){
+            setProblemDetails(request, response);
             return;
         }
 
         // Get token from authorization by omitting Bearer prefix
-        String token = request.getHeader("Authorization").substring(7);
+        String token = authorization.substring(7);
 
+        // Initialize email as blank
         String email = "";
 
         // This try block will check if token has already expired.
@@ -104,7 +102,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         }catch (JwtException e){
             // Sets attribute and return 401 Unauthorized if token is already expired
-            request.setAttribute("jwtExpired", true);
+            // This will be handled in front-end using interceptor(response) and will check header attribute
+            // as token expired, it will automatically send request for new token
+            request.setAttribute("token_expired", true);
+            System.out.println("Token expired");
+            return;
         }
     }
 
@@ -126,5 +128,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // Set authentication to SecurityContext
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+    }
+
+    /**
+     * Sets problem details that is sent to client when a token error occurs
+     *
+     * @param request HttpServletRequest for request references like uri
+     * @param response HttpServletResponse for response references like writer
+     * @throws IOException If response writer gets an error
+     */
+    private void setProblemDetails(HttpServletRequest request,
+                                            HttpServletResponse response) throws IOException {
+
+        ProblemDetail responseError = ProblemDetailUtil.details(
+                "token-not-found",
+                HttpStatus.FORBIDDEN,
+                "Token Not Found",
+                "No token found",
+                HttpStatus.FORBIDDEN.value(),
+                "urn:problem:missing-token",
+                ErrorCode.REQUEST_FORBIDDEN.name(),
+                request.getRequestURI()
+        );
+
+        // Send error as JSON
+        ProblemDetailUtil.writeDetailsAsJson(response, responseError);
     }
 }

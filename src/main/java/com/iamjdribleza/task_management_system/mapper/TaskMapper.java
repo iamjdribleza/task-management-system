@@ -88,9 +88,9 @@ public interface TaskMapper {
      * @param due Date when task's occurs
      * @return Date task's will occur
      */
-    default String formatDate(LocalDate due){
+    default LocalDate formatDate(LocalDate due){
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MMM dd");
 
-        return dateTimeFormatter.format(due);
+        return LocalDate.parse(dateTimeFormatter.format(due));
     }
 }

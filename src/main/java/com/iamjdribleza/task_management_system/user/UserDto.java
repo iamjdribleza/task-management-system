@@ -6,28 +6,28 @@
 
 package com.iamjdribleza.task_management_system.user;
 
-import com.iamjdribleza.task_management_system.auth.AuthDto;
+import com.iamjdribleza.task_management_system.auth.AuthenticationEmailDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Stores User's data for service and controller rendering.
  *
- * @param referenceId account's reference id
- * @param firstName account's email
- * @param lastName account's password
- * @param roles account's list of roles
- * @param auth account's authentication details such as email and password
+ * @param referenceId Account's reference id
+ * @param firstName Account's email
+ * @param lastName Account's password
+ * @param roles Account's list of roles
+ * @param authentication Account's authentication details such as email and password
  *
  * @author iamjdribleza
  * @version 1.0
  */
 public record UserDto(
 
-        String referenceId,
+        UUID referenceId,
 
         @NotBlank(message = "Blank first name")
         String firstName,
@@ -35,9 +35,9 @@ public record UserDto(
         @NotBlank(message = "Blank last name")
         String lastName,
 
-        List<SimpleGrantedAuthority> roles,
+        List<String> roles,
 
         @Valid
-        AuthDto auth
+        AuthenticationEmailDto authentication
 ) {
 }

@@ -22,16 +22,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 
 @Service
-public class AuthUserDetailsServiceImpl implements UserDetailsService {
+public class AuthenticationDetailsServiceImpl implements UserDetailsService {
 
-    private final AuthRepository authRepository;
+    private final AuthenticationRepository authenticationRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+
         // Check database if email exists
-        Auth auth = authRepository.findByEmail(email)
+        Authentication authentication = authenticationRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("email"));
 
-        return new AuthUserDetails(auth.getUser());
+        return new AuthenticationDetails(authentication.getUser());
     }
 }

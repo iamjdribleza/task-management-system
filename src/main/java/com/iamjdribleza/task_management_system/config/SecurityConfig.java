@@ -44,6 +44,7 @@ public class SecurityConfig {
     // Allowed url for unauthenticated user (register, login)
     private final String[] PUBLIC_ENDPOINTS = {
             "/api/v1/users",
+            "/api/v1/auth",
             "/api/v1/auth/*"
     };
 

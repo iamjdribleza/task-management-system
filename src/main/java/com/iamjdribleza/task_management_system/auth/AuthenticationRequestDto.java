@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotBlank;
 import java.util.UUID;
 
 /**
- * Stores Authentication data for service and controller rendering.
+ * Stores incoming Authentication data for service and controller rendering.
  *
  * @param referenceId account's reference id
  * @param email account's email
@@ -20,7 +20,7 @@ import java.util.UUID;
  * @author iamjdribleza
  * @version 1.0
  */
-public record AuthDto(
+public record AuthenticationRequestDto(
         UUID referenceId,
 
         @NotBlank(message = "Blank email address")

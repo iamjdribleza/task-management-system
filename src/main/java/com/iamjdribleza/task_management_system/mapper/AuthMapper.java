@@ -6,8 +6,8 @@
 
 package com.iamjdribleza.task_management_system.mapper;
 
-import com.iamjdribleza.task_management_system.auth.Auth;
-import com.iamjdribleza.task_management_system.auth.AuthDto;
+import com.iamjdribleza.task_management_system.auth.Authentication;
+import com.iamjdribleza.task_management_system.auth.AuthenticationRequestDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -24,8 +24,8 @@ import java.util.List;
 public interface AuthMapper {
 
     @Mapping(target = "password", ignore = true)
-    AuthDto toDto(Auth auth);
+    AuthenticationRequestDto toDto(Authentication authentication);
 
-    Auth toAuth(AuthDto authDto);
-    List<AuthDto> toDtoList(List<Auth> auths);
+    Authentication toAuth(AuthenticationRequestDto authenticationRequestDto);
+    List<AuthenticationRequestDto> toDtoList(List<Authentication> authentications);
 }

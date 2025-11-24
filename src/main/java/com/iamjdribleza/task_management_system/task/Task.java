@@ -44,18 +44,17 @@ public class Task {
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "task_seq"
+            generator = "task_seq_gen"
     )
     private long id;
 
 
-    // Used to expose task's identity on client
+    // Used to expose task's identity to the client
     @Column(
             nullable = false,
             unique = true,
             updatable = false
     )
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID referenceId;
 
 
